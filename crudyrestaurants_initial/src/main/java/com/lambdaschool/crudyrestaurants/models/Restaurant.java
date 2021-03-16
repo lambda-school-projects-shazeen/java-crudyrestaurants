@@ -1,10 +1,16 @@
 package com.lambdaschool.crudyrestaurants.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The entity allowing interaction with the restaurants table.
  */
+
+//annotations
 @Entity
 @Table(name = "restaurants")
 public class Restaurant
@@ -49,6 +55,17 @@ public class Restaurant
      */
     private int seatcapacity;
 
+
+    //array that will store menu items in it
+    //cascade for deleting - if i delete a restaurant i want to delete everything related to that restaurant
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menus = new ArrayList<>();
+
+    @ManyToMany()
+    @JoinTable(name = "restaurantpayments",
+        joinColumns = @JoinColumn(name ="restaurantid"),
+        inverseJoinColumns = @JoinColumn(name = "paymentid"))
+    private Set<Payment> payments = new HashSet<>();
     /**
      * Default constructor used primarily by the JPA.
      */
@@ -223,5 +240,27 @@ public class Restaurant
     public void setSeatcapacity(int seatcapacity)
     {
         this.seatcapacity = seatcapacity;
+    }
+
+
+    //SETTER AND GETTER for menus and restaurant
+    public List<Menu> getMenus()
+    {
+        return menus;
+    }
+
+    public void setMenus(List<Menu> menus)
+    {
+        this.menus = menus;
+    }
+
+    public Set<Payment> getPayments()
+    {
+        return payments;
+    }
+
+    public void setPayments(Set<Payment> payments)
+    {
+        this.payments = payments;
     }
 }
