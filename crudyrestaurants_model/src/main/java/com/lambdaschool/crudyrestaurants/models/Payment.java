@@ -1,5 +1,7 @@
 package com.lambdaschool.crudyrestaurants.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +32,7 @@ public class Payment
      * Contains a Set of Restaurant Objects using this Payment method.
      */
     @ManyToMany(mappedBy = "payments")
+    @JsonIgnoreProperties(value = "payments", allowSetters = true)
     private Set<Restaurant> restaurants = new HashSet<>();
 
     /**
