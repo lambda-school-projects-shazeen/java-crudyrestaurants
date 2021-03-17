@@ -181,6 +181,10 @@ public class RestaurantController
         return new ResponseEntity<>(newRestaurant, responseHeaders, HttpStatus.CREATED);
     }
 
-
+    @PatchMapping(value = "/restaurant/{restid}", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> updateRestaurantById(@PathVariable long restid, @RequestBody Restaurant restaurant) {
+        Restaurant updatedRestaurant = restaurantServices.update(restid, restaurant);
+        return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
+    }
 
 }
