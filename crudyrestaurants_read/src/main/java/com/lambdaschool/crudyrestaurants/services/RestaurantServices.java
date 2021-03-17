@@ -72,5 +72,18 @@ public interface RestaurantServices
      * @param restaurant the restaurant object to be saved
      * @return the saved restaurant object including any automatically generated fields
      */
+
+    //POST -> Create a new resource
+    //    "/restaurant
+    //PUT -> replacing an entire resource
+    //    "/restaurant/{restid}"
     Restaurant save(Restaurant restaurant);
+    //PATCH -> updating some fields of a resource
+    //    "/restaurant/{restid}"
+    Restaurant update(long id, Restaurant restaurant);
+    //DELETE -> delete a resource
+    //    "/restaurant/{restid}"
+    void delete(long id);
+    //only use for seed data
+    void deleteAll();
 }

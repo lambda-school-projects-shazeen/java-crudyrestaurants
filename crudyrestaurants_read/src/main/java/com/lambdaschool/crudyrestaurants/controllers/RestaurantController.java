@@ -4,13 +4,14 @@ import com.lambdaschool.crudyrestaurants.models.Restaurant;
 import com.lambdaschool.crudyrestaurants.services.RestaurantServices;
 import com.lambdaschool.crudyrestaurants.views.MenuCounts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 
@@ -153,5 +154,33 @@ public class RestaurantController
         return new ResponseEntity<>(myList,
             HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/restaurant/{restid}")
+    public ResponseEntity<?> deleteById(@PathVariable long restid) {
+        restaurantServices.delete(restid);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/restaurant/{restid}", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> replaceRestaurantById(@PathVariable long restid, @RequestBody @Valid Restaurant restaurant) {
+        restaurant.setRestaurantid(restid);
+        Restaurant newRestaurant = restaurantServices.save(restaurant);
+        return new ResponseEntity<>(newRestaurant, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/restaurant", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> addNewRestaurant(@RequestBody @Valid Restaurant restaurant) {
+        restaurant.setRestaurantid(0);
+        Restaurant newRestaurant = restaurantServices.save(restaurant);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newRestaurantURI = ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{restid}")
+            .buildAndExpand(newRestaurant.getRestaurantid())
+            .toUri();
+        responseHeaders.setLocation(newRestaurantURI);
+        return new ResponseEntity<>(newRestaurant, responseHeaders, HttpStatus.CREATED);
+    }
+
+
 
 }
